@@ -10,52 +10,34 @@ import cv2
 import numpy as np
 import picamera
 import threading
+import time
+import config
+
 
 from threading import Thread
 
 class OpenCVCapture(Thread):
     def __init__(self):
         Thread.__init__(self)
-        self.buffer = io.BytesIO()
-        self.lock = threading.Lock()
-        self.running = True
 
     def run(self):
-        with picamera.PiCamera() as camera:
-            camera.resolution = (620, 540)
-            camera.framerate = 10
-            stream = io.BytesIO()
-            for stream in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
-                self.lock.acquire()
-                try:
-                    # swap the stream for the buffer
-                    temp = stream
-                    stream = self.buffer
-                    self.buffer = temp
-                    stream.truncate()
-                    stream.seek(0)
-                finally:
-                    self.lock.release()
-                if self.running == False:
-                    break
-
-            camera.stop_preview()
-
+        self.camera = picamera.PiCamera()
+        self.camera.resolution = (620, 540)
+        self.camera.exposure_mode = "night"
+        self.camera.brightness = 60
 
     def read(self):
         """Read a single frame from the camera and return the data as an OpenCV
         image (which is a numpy array).
         """
-        self.lock.acquire()
-        try:
-            # Construct a numpy array from the stream
-            data = np.fromstring(self.buffer.getvalue(), dtype=np.uint8)
-        finally:
-            self.lock.release()
-
+        data = io.BytesIO()
+        self.camera.capture(data, format='jpeg')
+        # Construct a numpy array from the stream
+        data = np.fromstring(data.getvalue(), dtype=np.uint8)
         image = cv2.imdecode(data, 1)
+        cv2.imwrite("debug.jpg", image)
         return image
 
     def stop(self):
-        self.running = False
+        self.camera.close()
         self.join()
