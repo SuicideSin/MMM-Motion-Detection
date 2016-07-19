@@ -10,37 +10,35 @@ import cv2
 import numpy as np
 import picamera
 import threading
+import time
+import config
 
 from threading import Thread
 
 class OpenCVCapture(Thread):
     def __init__(self):
         Thread.__init__(self)
-        self.buffer = io.BytesIO()
+        self.currentBuffer = 0
+        self.buffers = [io.BytesIO(), io.BytesIO()]
         self.lock = threading.Lock()
         self.running = True
+
+    def getBuffer(self):
+        while self.running:
+            self.lock.acquire()
+            self.currentBuffer = (self.currentBuffer + 1) % 2
+            self.lock.release()
+            buffer = self.buffers[self.currentBuffer]
+            buffer.truncate()
+            buffer.seek(0)
+            yield buffer
+	    time.sleep(config.get("interval"))
 
     def run(self):
         with picamera.PiCamera() as camera:
             camera.resolution = (620, 540)
             camera.framerate = 10
-            stream = io.BytesIO()
-            for stream in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
-                self.lock.acquire()
-                try:
-                    # swap the stream for the buffer
-                    temp = stream
-                    stream = self.buffer
-                    self.buffer = temp
-                    stream.truncate()
-                    stream.seek(0)
-                finally:
-                    self.lock.release()
-                if self.running == False:
-                    break
-
-            camera.stop_preview()
-
+            camera.capture_sequence(self.getBuffer(), format='jpeg', use_video_port=True)
 
     def read(self):
         """Read a single frame from the camera and return the data as an OpenCV
@@ -48,11 +46,12 @@ class OpenCVCapture(Thread):
         """
         self.lock.acquire()
         try:
+            free_buffer = (self.currentBuffer + 1) % 2
+            buffer = self.buffers[free_buffer]
             # Construct a numpy array from the stream
-            data = np.fromstring(self.buffer.getvalue(), dtype=np.uint8)
+            data = np.fromstring(buffer.getvalue(), dtype=np.uint8)
         finally:
             self.lock.release()
-
         image = cv2.imdecode(data, 1)
         return image
 
