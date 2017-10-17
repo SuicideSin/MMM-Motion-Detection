@@ -48,7 +48,7 @@ time.sleep(1)
 
 emptyFrame = None
 detectedMotion = False
-last_motion = time.Time()
+last_motion = time.time()
 
 # Main Loop
 while True:
