@@ -7,16 +7,18 @@ The MIT License (MIT)
 Copyright (c) 2016 Paul-Vincent Roll (MIT License)
 Based on work by Tony DiCola (Copyright 2013) (MIT License)
 """
-import inspect
-import os
 import json
 import sys
-import platform
 
 CONFIG = json.loads(sys.argv[1]);
 
 def to_node(type, message):
-    print(json.dumps({type: message}))
+    # convert to json and print (node helper will read from stdout)
+    try:
+        print(json.dumps({type: message}))
+    except Exception:
+        pass
+    # stdout has to be flushed manually to prevent delays in the node helper communication
     sys.stdout.flush()
 
 def get(key):
