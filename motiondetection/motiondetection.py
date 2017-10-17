@@ -19,6 +19,17 @@ import time
 import cv2
 import config
 import signal
+import sys
+import json
+
+def to_node(type, message):
+    # convert to json and print (node helper will read from stdout)
+    try:
+        print(json.dumps({type: message}))
+    except Exception:
+        pass
+    # stdout has to be flushed manually to prevent delays in the node helper communication
+    sys.stdout.flush()
 
 to_node("status", "Motion Detection started...")
 
@@ -70,14 +81,13 @@ while True:
     # loop over the contours
     for c in cnts:
         # if the contour is too small, ignore it
-        if cv2.contourArea(c) > config.get("detectionThreshold")
+        if cv2.contourArea(c) > config.get("detectionThreshold"):
             detectedMotion = True
-            # motion!
             break
 
     if last_motion is None and detectedMotion is True:
         last_motion = time.time()
         to_node("motion-detected")
-    else if last_motion != None and time.time() - last_motion > config.get("turnOffDelay")):
+    elif last_motion != None and time.time() - last_motion > config.get("turnOffDelay"):
         last_motion = None
         to_node("motion-stopped")

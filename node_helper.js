@@ -7,7 +7,7 @@ var pythonStarted = false
 module.exports = NodeHelper.create({
 
   log: function (msg) {
-    console.log("[" + self.name + "] " + msg);
+    console.log("[" + this.name + "] " + msg);
   },
 
   activateMonitor: function () {
