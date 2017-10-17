@@ -1,25 +1,25 @@
 {
-  "name": "Magic-Mirror-Module-Facial-Recognition",
-  "version": "2.0.0",
-  "description": "Facial recognition and module swapping for the Magic Mirror.",
+  "name": "Magic-Mirror-Module-Motion-Detection",
+  "version": "0.1.0",
+  "description": "PiCam and Webcam Motion Detection",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/paviro/MMM-Facial-Recognition"
+    "url": "git+https://github.com/dmcinnes/MMM-Motion-Detection"
   },
   "keywords": [
     "magic mirror",
     "smart mirror",
-    "Facial recognition",
+    "motion detection",
     "module"
   ],
-  "author": "Paul-Vincent Roll",
-  "contributors": "https://github.com/paviro/MMM-Facial-Recognition/graphs/contributors",
+  "author": "Doug McInnes",
+  "contributors": "https://github.com/dmcinnes/MMM-Motion-Detection/graphs/contributors",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/paviro/MMM-Facial-Recognition/issues"
+    "url": "https://github.com/dmcinnes/MMM-Motion-Detection/issues"
   },
-  "homepage": "https://github.com/paviro/MMM-Facial-Recognition#readme",
+  "homepage": "https://github.com/dmcinnes/MMM-Motion-Detection#readme",
   "dependencies": {
     "python-shell": "latest"
-    }
+  }
 }
