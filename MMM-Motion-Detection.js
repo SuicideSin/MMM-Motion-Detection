@@ -23,4 +23,9 @@ Module.register('MMM-Motion-Detection', {
     // Threshold for motion detection, smaller numbers means more sensitive
     detectionThreshold: 500
   }
+
+  start: function() {
+    this.sendSocketNotification('CONFIG', this.config);
+    Log.info('Starting module: ' + this.name);
+  }
 });
