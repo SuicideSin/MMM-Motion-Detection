@@ -19,6 +19,8 @@ Module.register('MMM-Motion-Detection', {
     // recognition interval in seconds (smaller number = faster but CPU intens!)
     interval: 2,
     // Turn off delay after movement stops being sensed.
-    turnOffDelay: 60
+    turnOffDelay: 60,
+    // Threshold for motion detection, smaller numbers means more sensitive
+    detectionThreshold: 500
   }
 });

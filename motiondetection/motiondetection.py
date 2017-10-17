@@ -70,7 +70,7 @@ while True:
     # loop over the contours
     for c in cnts:
         # if the contour is too small, ignore it
-        if cv2.contourArea(c) > config.get("threshold")
+        if cv2.contourArea(c) > config.get("detectionThreshold")
             detectedMotion = True
             # motion!
             break
@@ -78,6 +78,6 @@ while True:
     if last_motion is None and detectedMotion is True:
         last_motion = time.time()
         to_node("motion-detected")
-    else if last_motion != None and time.time() - last_motion > config.get("logoutDelay")):
+    else if last_motion != None and time.time() - last_motion > config.get("turnOffDelay")):
         last_motion = None
         to_node("motion-stopped")
