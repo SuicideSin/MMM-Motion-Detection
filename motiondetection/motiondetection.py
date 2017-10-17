@@ -60,14 +60,14 @@ while True:
     # Convert image to grayscale.
     image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     # Blur it
-    image = cv2.GaussianBlur(gray, (21, 21), 0)
+    image = cv2.GaussianBlur(image, (21, 21), 0)
 
-    # if the first frame is None, initialize it
-    if firstFrame is None:
-        firstFrame = gray
+    # if the empty frame is None, initialize it
+    if emptyFrame is None:
+        emptyFrame = image
         continue
 
-    frameDelta = cv2.absdiff(firstFrame, image)
+    frameDelta = cv2.absdiff(emptyFrame, image)
     thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
 
     # dilate the thresholded image to fill in holes, then find contours
@@ -87,7 +87,7 @@ while True:
 
     if last_motion is None and detectedMotion is True:
         last_motion = time.time()
-        to_node("motion-detected")
+        to_node("motion-detected", {})
     elif last_motion != None and time.time() - last_motion > config.get("turnOffDelay"):
         last_motion = None
-        to_node("motion-stopped")
+        to_node("motion-stopped", {})
