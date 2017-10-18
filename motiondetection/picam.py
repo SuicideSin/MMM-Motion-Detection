@@ -18,7 +18,7 @@ class OpenCVCapture(Thread):
         Thread.__init__(self)
         self.buffer = io.BytesIO()
         self.lock = threading.Lock()
-        self.running = True
+        self.shutdown_flag = threading.Event()
 
     def run(self):
         with picamera.PiCamera() as camera:
@@ -36,7 +36,7 @@ class OpenCVCapture(Thread):
                     stream.seek(0)
                 finally:
                     self.lock.release()
-                if self.running == False:
+                if self.shutdown_flag.is_set():
                     break
 
             camera.stop_preview()
@@ -57,5 +57,5 @@ class OpenCVCapture(Thread):
         return image
 
     def stop(self):
-        self.running = False
+        self.shutdown_flag.set()
         self.join()

@@ -46,6 +46,12 @@ signal.signal(signal.SIGINT, shutdown)
 # sleep for a second to let the camera warm up
 time.sleep(1)
 
+frame = camera.read()
+if frame == None:
+  to_node("status", 'Camera Failed to Initialize! Shutting Down.')
+  camera.stop()
+  sys.exit(1)
+
 def diffImg(t0, t1, t2):
   d1 = cv2.absdiff(t2, t1)
   d2 = cv2.absdiff(t1, t0)
