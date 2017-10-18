@@ -46,29 +46,28 @@ signal.signal(signal.SIGINT, shutdown)
 # sleep for a second to let the camera warm up
 time.sleep(1)
 
-emptyFrame = None
-detectedMotion = False
-last_motion = time.Time()
+def diffImg(t0, t1, t2):
+  d1 = cv2.absdiff(t2, t1)
+  d2 = cv2.absdiff(t1, t0)
+  return cv2.bitwise_and(d1, d2)
+
+t_minus = None
+t       = cv2.cvtColor(camera.read(), cv2.COLOR_RGB2GRAY)
+t_plus  = cv2.cvtColor(camera.read(), cv2.COLOR_RGB2GRAY)
+
+last_motion = None
 
 # Main Loop
 while True:
     # Sleep for x seconds specified in module config
     time.sleep(config.get("interval"))
 
-    # Get image
-    image = camera.read()
-    # Convert image to grayscale.
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    # Blur it
-    image = cv2.GaussianBlur(image, (21, 21), 0)
+    t_minus = t
+    t       = t_plus
+    t_plus  = cv2.cvtColor(camera.read(), cv2.COLOR_RGB2GRAY)
 
-    # if the empty frame is None, initialize it
-    if emptyFrame is None:
-        emptyFrame = image
-        continue
-
-    frameDelta = cv2.absdiff(emptyFrame, image)
-    thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
+    diff = diffImg(t_minus, t, t_plus)
+    thresh = cv2.threshold(diff, 25, 255, cv2.THRESH_BINARY)[1]
 
     # dilate the thresholded image to fill in holes, then find contours
     # on thresholded image
@@ -76,18 +75,17 @@ while True:
     (cnts, _) = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
                                     cv2.CHAIN_APPROX_SIMPLE)
 
-    detectedMotion = False
-
+    max = 0
     # loop over the contours
     for c in cnts:
-        # if the contour is too small, ignore it
-        if cv2.contourArea(c) > config.get("detectionThreshold"):
-            detectedMotion = True
-            break
+        area = cv2.contourArea(c)
+        if area > max:
+            max = area
 
-    if last_motion is None and detectedMotion is True:
+    if max > config.get("detectionThreshold"):
+        if last_motion is None:
+            to_node("motion-detected", {})
         last_motion = time.time()
-        to_node("motion-detected", {})
     elif last_motion != None and time.time() - last_motion > config.get("turnOffDelay"):
         last_motion = None
         to_node("motion-stopped", {})
