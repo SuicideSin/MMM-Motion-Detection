@@ -1,9 +1,7 @@
 # MMM-Motion-Detection
-This an extension for the [MagicMirror](https://github.com/MichMich/MagicMirror). It provides motion detection to only turn the mirror's display on when there is people in the room.
+This an extension for the [MagicMirror](https://github.com/MichMich/MagicMirror). With this module your mirror will only turn on when it detects motion through the Rasberry Pi's PiCam or a USB webcam. It also emits `motion-detected` and `motion-stopped` notifications for other modules to use.
 
 This was ported from [Paviro's MMM-Facial-Recognition module](https://github.com/paviro/MMM-Facial-Recognition) mostly to get the python code for camera usage and OpenCV support.
-
-By default it uses the Rasberry Pi's PiCam, but can also be configured to work with a USB Webcam. It emits `motion-detected` and `motion-stopped` notifications for other modules to use.
 
 ## Usage
 
