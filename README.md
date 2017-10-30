@@ -7,10 +7,10 @@ This was ported from [Paviro's MMM-Facial-Recognition module](https://github.com
 
 Configuration variables shown here are the defaults and don't have to be specified unless you want to change them:
 
-```
+```javascript
 {
-	module: 'MMM-Motion-Detection',
-	config: {
+    module: 'MMM-Motion-Detection',
+    config: {
         // force the use of a usb webcam on raspberry pi
         useUSBCam: false,
         // recognition interval in seconds (smaller number = faster but more CPU intensive!)
@@ -21,7 +21,7 @@ Configuration variables shown here are the defaults and don't have to be specifi
         detectionThreshold: 1000,
         // Turn off display when no motion is detected.
         turnOffDisplay: true
-	}
+    }
 }
 ```
 
