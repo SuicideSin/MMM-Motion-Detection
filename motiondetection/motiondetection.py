@@ -92,6 +92,6 @@ while True:
         if last_motion is None:
             to_node("motion-detected", {})
         last_motion = time.time()
-    elif last_motion != None and time.time() - last_motion > config.get("turnOffDelay"):
+    elif last_motion != None and time.time() - last_motion > config.get("motionStopDelay"):
         last_motion = None
         to_node("motion-stopped", {})

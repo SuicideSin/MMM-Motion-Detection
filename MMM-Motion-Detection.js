@@ -18,10 +18,12 @@ Module.register('MMM-Motion-Detection', {
     useUSBCam: false,
     // recognition interval in seconds (smaller number = faster but more CPU intensive!)
     interval: 1,
-    // Turn off delay after movement stops being sensed (in seconds).
-    turnOffDelay: 120,
+    // Notificaiton Delay after movement stops being sensed (in seconds).
+    motionStopDelay: 120,
     // Threshold for motion detection, smaller numbers means more sensitive
-    detectionThreshold: 1000
+    detectionThreshold: 1000,
+    // Turn off display when no motion is detected.
+    turnOffDisplay: true
   },
 
   start: function () {
